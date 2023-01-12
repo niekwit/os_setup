@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 NVIDEA="FALSE"
 NONFREE="FALSE"
 MAX_PARALLEL_DOWNLOADS=5
@@ -61,11 +63,11 @@ else
 	sudo echo max_parallel_downloads=${MAX_PARALLEL_DOWNLOADS} >> /etc/dnf/dnf.conf
 	sudo echo defaultyes=True >> /etc/dnf/dnf.conf
 	
-	echo "Enabling RPM free fusion repository"
+	echo "Enabling free RPM fusion repository"
 	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
 	if [[ NONFREE == "TRUE" ]];
 	then
-		echo "Enabling RPM non-free fusion repository"
+		echo "Enabling non-free RPM fusion repository"
 		sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
 	fi
 	
@@ -75,10 +77,21 @@ else
 	echo "Installing gnome-tweak-tools"
 	sudo dnf install gnome-tweak-tool -y
 	
+	echo "Enabling windows minimise/maximise"
+	gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
+	
 	echo "Installing gedit flatpak"
 	flatpak install flathub org.gnome.gedit
 	
 	#echo "Configuring gedit"
+	
+	echo "Installing VirtualBox"
+	sudo dnf install @development-tools -y
+	sudo dnf install kernel-devel kernel-headers dkms qt5-qtx11extras elfutils-libelf-devel zlib-devel  -y
+	wget -q https://www.virtualbox.org/download/oracle_vbox.asc
+	sudo rpm --import oracle_vbox.asc
+	sudo cp "{$SCRIPT_DIR}/virtualbox.repo" /etc/yum.repos.d/
+	sudo dnf install VirtualBox-7.0
 	
 	echo "Installing Timeshift"
 	sudo dnf install timeshift -y
@@ -86,14 +99,27 @@ else
 	echo "Installing R"
 	sudo dnf install R -y
 	
+	echo "Installing R packages"
+	Rscript -e "install.packages(c("tydiverse","reshape2","caret","BiocManager"))"
+	
+	echo "Installing RStudio"
+	URL="https://download1.rstudio.org/electron/rhel8/x86_64/rstudio-2022.12.0-353-x86_64.rpm"
+	FILE="~/Downloads/rstudio-temp.rpm"
+	wget $URL -O $FILE
+	sudo rpm -i $FILE
+	rm $FILE
+	
 	echo "Installing pip"
 	sudo dnf python3-pip -y
 	
 	echo "Installing Spyder IDE"
 	pip install spyder
 	
+	echo "Installing more Python packages"
+	pip install numpy pandas matplotlib seaborn pysam yaml pybedtools clint gseapy tqdm
+	
 	echo "Installing wallpaper packs"
-	sudo dnf install f34-backgrounds-gnome f33-backgrounds-gnome f33-backgrounds-gnome verne-backgrounds-gnome -y
+	sudo dnf install f34-backgrounds-gnome f33-backgrounds-gnome f26-backgrounds-gnome verne-backgrounds-gnome -y
 	
 	echo "Changing login screen background"
 	IMAGE="~/Pictures/haven1-i_see_stars-01.png"
@@ -131,8 +157,6 @@ else
 	fi
 	
 fi
-
-
 
 
 
