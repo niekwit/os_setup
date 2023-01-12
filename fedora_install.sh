@@ -50,7 +50,7 @@ then
 	
 	echo "Updating system"
 	sudo dnf update -y
-	touch .reboot
+	touch $REBOOT
 	echo "Rebooting system in 5 seconds (CTRL + C to abort)"
 	sleep 5
 	sudo reboot
