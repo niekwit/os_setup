@@ -89,12 +89,12 @@ else
 	#echo "Configuring gedit"
 	
 	echo "Installing VirtualBox"
-	dnf install @development-tools -y
-	dnf install kernel-devel kernel-headers dkms qt5-qtx11extras elfutils-libelf-devel zlib-devel  -y
-	wget -q https://www.virtualbox.org/download/oracle_vbox.asc
-	rpm --import oracle_vbox.asc
-	cp "{$SCRIPT_DIR}/virtualbox.repo" /etc/yum.repos.d/
-	dnf install VirtualBox-7.0
+	#dnf install @development-tools -y
+	#dnf install kernel-devel kernel-headers dkms qt5-qtx11extras elfutils-libelf-devel zlib-devel  -y
+	#wget -q https://www.virtualbox.org/download/oracle_vbox.asc
+	#rpm --import oracle_vbox.asc
+	#cp "$SCRIPT_DIR/virtualbox.repo" /etc/yum.repos.d/
+	#dnf install VirtualBox-7.0
 	
 	echo "Installing Timeshift"
 	dnf install timeshift -y
@@ -154,7 +154,7 @@ else
 	
 	if [[ NVIDIA == "TRUE" ]];
 	then
-		echo "Installing Nvidea drivers"
+		echo "Installing Nvidia drivers"
 		dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora36/x86_64/cuda-fedora36.repo
 		dnf install kernel-headers kernel-devel tar bzip2 make automake gcc gcc-c++ pciutils elfutils-libelf-devel libglvnd-opengl libglvnd-glx libglvnd-devel acpid pkgconfig dkms -y
 	fi
