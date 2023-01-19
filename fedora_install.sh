@@ -102,8 +102,13 @@ else
 	echo "Installing R"
 	dnf install R -y
 	
-	echo "Installing R packages"
-	sudo -u $USER Rscript -e "install.packages(c("tidyverse","reshape2","caret","BiocManager"))"
+	echo "Installing R packages and dependencies"
+	dnf install libcurl-devel
+	dnf install openssl-devel 
+	for PACKAGE in tidyverse reshape2 caret BiocManager
+	do
+		sudo -u $USER R -e "install.packages('$PACKAGE',repos='http://cran.rstudio.com/')"
+	done
 	
 	echo "Installing RStudio"
 	URL="https://download1.rstudio.org/electron/rhel8/x86_64/rstudio-2022.12.0-353-x86_64.rpm"
